@@ -45,7 +45,7 @@ const TaskCard = ({ title, description, status, taskId, createdAt, completedAt }
                 deleteLoading && <div className="flex items-center justify-center min-w-[340px] max-w-[390px] h-[60vh]"><Loader /></div>
             }
             {
-                !deleteLoading && <div className='min-w-[250px] min-h-[340px] border-2 border-blue-600 text-black flex flex-col justify-between py-6 px-3 rounded-md'>
+                !deleteLoading && <div className='min-w-[340px] max-w-[390px] min-h-[340px] border-2 border-blue-600 text-black flex flex-col justify-between py-6 px-3 rounded-md'>
                 <div>
                   <div className='flex justify-between items-center mb-4 gap-4'>
                     <h1 className='text-2xl font-semibold'>{title}</h1>
