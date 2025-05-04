@@ -5,7 +5,7 @@ const Task = require('../models/taskModel')
 const Project = require('../models/projectModel')
 
 router.post('/:projectId', authenticateUser, async (req, res) => {
-    const { title, description } = req.body 
+    const { title, description, status } = req.body 
     const { projectId } = req.params
     try {
         if(title == '' || description == '') {
@@ -14,10 +14,16 @@ router.post('/:projectId', authenticateUser, async (req, res) => {
                 message: 'All fields are required!'
             })
         }
+        let completedAt = null
+        if(status == 'completed') {
+            completedAt = Date.now()
+        }
         const task = await Task.create({
             title,
             description,
-            projectId
+            status,
+            projectId,
+            completedAt
         })
         return res.status(201).json({
             success: true,
@@ -32,14 +38,45 @@ router.post('/:projectId', authenticateUser, async (req, res) => {
     }
 })
 
-router.get('/:projectId', authenticateUser, async (req, res) => {
+router.get('/:projectId/tasks', authenticateUser, async (req, res) => {
     const { projectId } = req.params
+    const page = parseInt(req.query.page) 
+    const limit = parseInt(req.query.limit) 
     try {
-        const tasks = await Task.find({ projectId })
+        const tasks = await Task.find({ projectId }).sort({ createdAt: -1 })
+        .skip(page * limit)
+        .limit(limit)
+        const totalTasks = await Task.countDocuments({ projectId })
         return res.status(200).json({
             success: true,
             message: 'Tasks fetched successfully!',
-            tasks
+            tasks,
+            totalPages: Math.ceil(totalTasks/limit)
+        }) 
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Failed to fetch tasks, ${error.message}`
+        })
+    }
+})
+
+router.get('/:taskId', authenticateUser, async (req, res) => {
+    const { taskId } = req.params
+    try {
+        const task = await Task.findById(taskId)
+        const projectId = task.projectId 
+        const project = await Project.findById(projectId)
+        if(project.userId != req.user.id) {
+            return res.status(400).json({
+                success: false,
+                message: `Not Authorized! Task does not belong to user`
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            message: 'Task fetched successfully!',
+            task
         })
     } catch (error) {
         return res.status(500).json({
@@ -51,7 +88,7 @@ router.get('/:projectId', authenticateUser, async (req, res) => {
 
 router.put('/:taskId', authenticateUser, async (req, res) => {
     const { taskId } = req.params
-    const { title, description } = req.body
+    const { title, description, status } = req.body
     try {
         const task = await Task.findById(taskId)
         if(!task) {
@@ -73,6 +110,12 @@ router.put('/:taskId', authenticateUser, async (req, res) => {
         }
         if(description != '') {
             task.description = description
+        }
+        if(status != '') {
+            task.status = status
+            if(status == 'completed') {
+                task.completedAt = Date.now()
+            }
         }
         await task.save()
         return res.status(200).json({

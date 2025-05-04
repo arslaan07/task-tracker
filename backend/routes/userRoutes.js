@@ -93,7 +93,7 @@ router.post('/sign-in', async (req, res) => {
             sameSite: process.env.NODE_ENV == 'production',
             maxAge: 24 * 60 * 60 * 1000
         })
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             message: 'User login successfull!',
             user: {
@@ -110,5 +110,26 @@ router.post('/sign-in', async (req, res) => {
         })
     }
 })
+
+router.get('/logout', (req, res) => {
+    try {
+        res.cookie('token', '', {
+            httpOnly: true,
+            expires: new Date(0)
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed",
+            error: error.message
+        });
+    }
+});
 
 module.exports = router

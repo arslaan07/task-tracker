@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
+import api from '../api'
+import MyToast from './MyToast'
+import { useDispatch } from 'react-redux'
+import { incrementProjectCount } from '../store/slices/projectSlice'
 
 const ProjectModal = ({isOpen, closeModal}) => {
     if(!isOpen) return null
     const [title, setTitle] = useState('')
     const [errors, setErrors] = useState({})
     const modalRef = useRef()
+    const dispatch = useDispatch()
     const validateField = (name, value) => {
         const newErrors = {}
         switch(name) {
@@ -23,6 +28,23 @@ const ProjectModal = ({isOpen, closeModal}) => {
         const {name, value} = e.target
         setTitle(value)
         validateField(name, value)
+    }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if(Object.keys(errors).length != 0) {
+            return
+        }
+        closeModal()
+        try {
+                const response = await api.post(`/api/v1/project`, {title}) 
+                console.log(response)
+                dispatch(incrementProjectCount())
+                MyToast('Project created!', 'success')
+                setTitle('')
+             } catch (error) {
+                 console.log(error)
+                 MyToast(error.response.data.message, 'error')
+             }
     }
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -51,7 +73,7 @@ const ProjectModal = ({isOpen, closeModal}) => {
         />
         </div>
         {errors.title && <div className='text-red-500 text-base min-h-[10px]'>{errors.title}</div>}
-        <button type='submit' className='bg-blue-600 text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>Add Project</button>
+        <button onClick={handleSubmit} type='submit' className='bg-blue-600 text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>Add Project</button>
       </form>
       </div>
     </div>

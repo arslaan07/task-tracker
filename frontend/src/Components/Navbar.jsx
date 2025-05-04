@@ -1,13 +1,44 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../api'
+import MyToast from './MyToast'
+import { logout } from '../store/slices/authSlice'
 
 const Navbar = () => {
+    const { isAuthenticated, user } = useSelector(state => state.auth)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+        try {
+            const response = await api.get('api/v1/user/logout')
+            console.log(response.data)
+            dispatch(logout())
+            navigate('/login')
+            MyToast('Logout successfull!', 'success')
+        } catch (error) {
+            console.log(error)
+            MyToast(error.response.data.message, 'error')
+        }
+    }
   return (
     <nav className='w-full h-[10vh] bg-blue-700 flex py-2 px-6 items-center justify-between'>
-      <h1 className='font-sans text-3xl text-white font-bold'>Task Tracker</h1>
+      <Link to='/dashboard' className='font-sans text-3xl text-white font-bold'>Task Tracker</Link>
       <div className='flex gap-4 pr-4'>
-        <Link to="/login" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Login</Link>
-        <Link to="/sign-up" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Signup</Link>
+        {
+            !isAuthenticated && 
+            <>
+            <Link to="/login" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Login</Link>
+            <Link to="/sign-up" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Signup</Link>
+            </>
+        }
+        {
+            isAuthenticated && 
+            <>
+            <span className='text-xl font-semibold text-white py-2'>Hi {user.name} </span>
+            <button onClick={handleLogout} className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Logout</button>
+            </>
+        }
       </div>
     </nav>
   )

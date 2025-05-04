@@ -1,11 +1,13 @@
 import React from 'react'
-const ProjectCard = () => {
+import { Link } from 'react-router-dom'
+const ProjectCard = ({ title, projectId }) => {
+    
   return (
-    <button className='mt-4 flex flex-col justify-center items-center w-fit bg-blue-600 w-[350px] h-[400px]
+    <Link to={`/dashboard/tasks/${projectId}`} className='mt-4 flex flex-col justify-center items-center w-fit bg-blue-600 min-w-[350px] h-[400px]
     rounded-md text-white hover:bg-blue-700 gap-4'>
         <span className='text-2xl'>📁</span>
-        <h1 className='text-2xl'>Project Title</h1>
-    </button>
+        <h1 className='text-2xl'>{title}</h1>
+    </Link>
   )
 }
 

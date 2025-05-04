@@ -1,12 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { decrementTaskCount, incrementTaskCount, updateTask } from '../store/slices/taskSlice'
+import api from '../api'
+import MyToast from './MyToast'
+import { useParams } from 'react-router-dom'
 
-const TaskModal = ({isOpen, closeModal}) => {
+const TaskModal = ({isOpen, closeModal, taskId}) => {
     if(!isOpen) return null
         const [title, setTitle] = useState('')
         const [description, setDescription] = useState('')
         const [status, setStatus] = useState('pending')
         const [errors, setErrors] = useState({})
         const modalRef = useRef()
+        const dispatch = useDispatch()
+        const navParams = useParams()
         const validateField = (name, value) => {
             const newErrors = {}
             switch(name) {
@@ -15,6 +22,8 @@ const TaskModal = ({isOpen, closeModal}) => {
                         newErrors.title = 'Title is required!'
                     } else if(value.length <= 5) {
                         newErrors.title = "Title must be atleast 5 characters!"
+                    } else if(value.length >= 18) {
+                        newErrors.title = "Title must not exceed 18 characters!"
                     } else {
                         delete newErrors.title
                     }
@@ -46,6 +55,35 @@ const TaskModal = ({isOpen, closeModal}) => {
             }
             validateField(name, value)
         }
+
+        const handleSubmit = async (e) => {
+            e.preventDefault()
+            if(Object.keys(errors).length != 0) {
+                return
+            }
+            closeModal()
+            try {
+                if(taskId) {
+                    const response = await api.put(`/api/v1/task/${taskId}`, {title, description, status}) 
+                    console.log(response.data)
+                    MyToast('Task updated!', 'success')
+                    dispatch(updateTask())
+                }
+                else {
+                    const response = await api.post(`/api/v1/task/${navParams.projectId}`, {title, description, status}) 
+                    console.log(response.data)
+                    dispatch(incrementTaskCount())
+                    MyToast('Task created!', 'success')
+                } 
+                    setTitle('')
+                    setDescription('')
+                    setStatus('pending')
+                 } catch (error) {
+                     console.log(error)
+                     MyToast(error.response.data.message, 'error')
+                 }
+        }
+
         useEffect(() => {
             const handleOutsideClick = (e) => {
                 if(modalRef.current && !modalRef.current.contains(e.target)) {
@@ -56,6 +94,23 @@ const TaskModal = ({isOpen, closeModal}) => {
     
             return () => document.removeEventListener('mousedown', handleOutsideClick)
         }, [isOpen, closeModal])
+    
+        useEffect(() => {
+            const fetchTask = async () => {
+                try {
+                    const response = await api.get(`/api/v1/task/${taskId}`)
+                    console.log(response.data.task)
+                    setTitle(response.data.task.title)
+                    setDescription(response.data.task.description)
+                    setStatus(response.data.task.status)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            if(taskId) {
+                fetchTask()
+            }
+        }, [taskId])
   return (
     <div className=' fixed flex justify-center items-center top-0 right-0 bottom-0 left-0 bg-black/50'>
       <div ref={modalRef} className=' absolute w-[600px] h-[440px] bg-white rounded-md p-6'>
@@ -101,7 +156,8 @@ const TaskModal = ({isOpen, closeModal}) => {
         </select>
         
         </div>
-        <button type='submit' className='bg-blue-600 text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>Add Task</button>
+        <button onClick={handleSubmit} style={{backgroundColor: taskId ? '#efaf00' : 'blue'}} type='submit' className=' text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>
+            {taskId ? 'Update Task' : 'Add Task'}</button>
       </form>
       </div>
     </div>

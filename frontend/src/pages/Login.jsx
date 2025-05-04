@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { countryList } from "../utils/countryList";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import api from "../api";
+import MyToast from "../Components/MyToast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/slices/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch()
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  
+  const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   
@@ -61,15 +66,27 @@ const Login = () => {
     validateField(name, value); 
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Object.keys(values).forEach((field) => {
-      validateField(field, values[field]);
-    });
     
-    if (Object.keys(errors).length === 0) {
-      // Submit logic here
+    if (Object.keys(errors).length != 0) {
+      return
     }
+    
+    try {
+        const response = await api.post(`/api/v1/user/sign-in`, values) 
+        console.log(response.data)
+        dispatch(setUser(response.data.user))
+        MyToast('Login successfull', 'success')
+        navigate('/dashboard')
+        setValues({
+            email: "",
+            password: "",
+        });
+     } catch (error) {
+         console.log(error)
+         MyToast(error.response.data.message, 'error')
+     }
   };
 
   const togglePasswordVisibility = () => {

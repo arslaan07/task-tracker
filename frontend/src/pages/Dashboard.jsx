@@ -1,16 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProjectCard from '../Components/ProjectCard'
 import { FaPlus } from "react-icons/fa6";
 import ProjectModal from '../Components/ProjectModal';
+import api from '../api';
+import MyToast from '../Components/MyToast';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [projects, setProjects] = useState([])
+    const { projectCount } = useSelector(state => state.project)
     const openModal = () => {
         setIsModalOpen(true)
     }
     const closeModal = () => {
         setIsModalOpen(false)
     }
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await api.get('/api/v1/project')
+                console.log(response.data.projects)
+                setProjects(response.data.projects)
+            } catch (error) {
+                console.log(error)
+                MyToast(error.response.data.message, 'error')
+            }
+        }
+        fetchProjects()
+    }, [projectCount])
   return (
     <>
     <div className=' mt-6 px-14 py-3'>
@@ -20,10 +38,16 @@ const Dashboard = () => {
             Create a Project
         </button>
     <div className='flex gap-12 mt-6'>
-      <ProjectCard />
-      <ProjectCard />
-      <ProjectCard />
-      <ProjectCard />
+      {
+        projects && projects.length > 0 && 
+        projects.map((project, id) => (
+            <ProjectCard key={id} projectId={project._id} title={project.title} />
+        ))
+      }
+      {
+        projects && projects.length == 0 && 
+        <h1 className='text-zinc-600 text-3xl w-full mt-10 text-center'>No projects created yet!</h1>
+      }
     </div>
       
     </div>

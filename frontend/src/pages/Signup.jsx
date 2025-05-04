@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { countryList } from "../utils/countryList";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import api from "../api";
+import MyToast from "../Components/MyToast";
 
 const Signup = () => {
   const [values, setValues] = useState({
@@ -11,7 +13,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-  
+  const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -84,14 +86,27 @@ const Signup = () => {
     validateField(name, value); 
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Object.keys(values).forEach((field) => {
-      validateField(field, values[field]);
-    });
     
-    if (Object.keys(errors).length === 0) {
-      // Submit logic here
+    if (Object.keys(errors).length != 0) {
+      return
+    }
+    try {
+       const response = await api.post(`/api/v1/user/sign-up`, values) 
+       console.log(response)
+       MyToast('Signup successfull!', 'success')
+       navigate('/login')
+       setValues({
+        name: "",
+        email: "",
+        country: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+        console.log(error)
+        MyToast(error.response.data.message, 'error')
     }
   };
 

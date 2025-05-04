@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Project = require('../models/projectModel')
 const authenticateUser = require('../middlewares/authenticateUser')
+const { countDocuments } = require('../models/taskModel')
 
 router.post('/', authenticateUser, async (req, res) => {
     const { title } = req.body 
@@ -13,7 +14,7 @@ router.post('/', authenticateUser, async (req, res) => {
                 message: 'title is required!'
             })
         }
-        const countOfProjects = await Project.countDocuments()
+        const countOfProjects = await Project.countDocuments({ userId: req.user.id })
         if(countOfProjects == 4) {
             return res.status(400).json({
                 success: false,
