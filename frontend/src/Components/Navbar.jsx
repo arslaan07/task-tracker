@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import api from '../api'
 import MyToast from './MyToast'
 import { logout } from '../store/slices/authSlice'
+import Loader from './Loader'
 
 const Navbar = () => {
     const { isAuthenticated, user } = useSelector(state => state.auth)
