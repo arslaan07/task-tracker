@@ -122,62 +122,70 @@ const TaskModal = ({isOpen, closeModal, taskId, loading, setLoading}) => {
         }, [taskId])
   return (
     <>
-    {
-                loading && <div className="flex items-center justify-center w-[360px] "><Loader /></div>
-            }
-            {
-                !loading && <div className=' fixed flex justify-center items-center top-0 right-0 bottom-0 left-0 bg-black/50'>
-                <div ref={modalRef} className=' absolute w-[600px] h-[500px] bg-white rounded-md  '>
-                <button onClick={closeModal} className='absolute top-3 right-5 text-xl hover:font-semibold'>X</button>
-                <form className=' flex flex-col p-6'>
-                  <div className='flex flex-col gap-2 justify-start '>
+    {isOpen && (
+      <div className='fixed flex justify-center items-center top-0 right-0 bottom-0 left-0 bg-black/50'>
+        <div ref={modalRef} className='absolute w-[600px] h-[500px] bg-white rounded-md'>
+          {loading ? (
+            <div className="flex items-center justify-center h-full w-full">
+              <Loader />
+            </div>
+          ) : (
+            <>
+              <button onClick={closeModal} className='absolute top-3 right-5 text-xl hover:font-semibold'>X</button>
+              <form className='flex flex-col p-6'>
+                <div className='flex flex-col gap-2 justify-start'>
                   <label className='text-3xl font-medium' htmlFor="title">Task Title</label>
                   <input 
-                  className='border-2 border-black rounded-md py-2 px-3 outline-none'
-                  placeholder='enter task title'
-                  type="text" 
-                  name='title'
-                  value={title}
-                  onChange={handleChange}
+                    className='border-2 border-black rounded-md py-2 px-3 outline-none'
+                    placeholder='enter task title'
+                    type="text" 
+                    name='title'
+                    value={title}
+                    onChange={handleChange}
                   />
-                  </div>
-                  {errors.title && <div className='text-red-500 text-base min-h-[10px]'>{errors.title}</div>}
-          
-                  <div className='flex flex-col gap-4 mt-5'>
+                </div>
+                {errors.title && <div className='text-red-500 text-base min-h-[10px]'>{errors.title}</div>}
+        
+                <div className='flex flex-col gap-4 mt-5'>
                   <label className='text-3xl font-medium' htmlFor="description">Task Description</label>
                   <input 
-                  className='border-2 border-black rounded-md py-2 px-3 outline-none'
-                  placeholder='enter task description'
-                  type="text" 
-                  name='description'
-                  value={description}
-                  onChange={handleChange}
+                    className='border-2 border-black rounded-md py-2 px-3 outline-none'
+                    placeholder='enter task description'
+                    type="text" 
+                    name='description'
+                    value={description}
+                    onChange={handleChange}
                   />
-                  </div>
-                  {errors.description && <div className='text-red-500 text-base min-h-[10px]'>{errors.description}</div>}
-          
-                  <div className='flex flex-col gap-4 mt-5'>
+                </div>
+                {errors.description && <div className='text-red-500 text-base min-h-[10px]'>{errors.description}</div>}
+        
+                <div className='flex flex-col gap-4 mt-5'>
                   <label className='text-3xl font-medium' htmlFor="description">Task Status</label>
                   <select 
-                  name="status" 
-                  id=""
-                  value={status}
-                  onChange={handleChange}
-                  className='border-2 border-black rounded-md py-2 px-3 outline-none'>
-                      <option value="pending">Pending</option>
-                      <option value="ongoing">Ongoing</option>
-                      <option value="completed">Completed</option>
+                    name="status" 
+                    id=""
+                    value={status}
+                    onChange={handleChange}
+                    className='border-2 border-black rounded-md py-2 px-3 outline-none'>
+                    <option value="pending">Pending</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="completed">Completed</option>
                   </select>
-                  
-                  </div>
-                  <button onClick={handleSubmit} style={{backgroundColor: taskId ? '#efaf00' : 'blue'}} type='submit' className=' text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>
-                      {taskId ? 'Update Task' : 'Add Task'}</button>
-                </form>
                 </div>
-              </div>
-            }
-    
-    </>
+                <button 
+                  onClick={handleSubmit} 
+                  style={{backgroundColor: taskId ? '#efaf00' : 'blue'}} 
+                  type='submit' 
+                  className='text-white font-medium rounded-md px-3 py-2 mt-4 hover:bg-blue-700'>
+                  {taskId ? 'Update Task' : 'Add Task'}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </>
   )
 }
 
