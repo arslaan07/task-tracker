@@ -6,6 +6,7 @@ import api from "../api";
 import MyToast from "../Components/MyToast";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/authSlice";
+import Loader from "../Components/Loader";
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -16,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true)
   
   const validateField = (name, value) => {
     let newErrors = { ...errors };
@@ -74,6 +76,7 @@ const Login = () => {
     }
     
     try {
+        setLoading(true)
         const response = await api.post(`/api/v1/user/sign-in`, values) 
         console.log(response.data)
         dispatch(setUser(response.data.user))
@@ -86,6 +89,8 @@ const Login = () => {
      } catch (error) {
          console.log(error)
          MyToast(error.response.data.message, 'error')
+     } finally {
+        setLoading(false)
      }
   };
 
@@ -96,78 +101,84 @@ const Login = () => {
 
   return (
     <div className="mt-[16px] px-12 py-8 flex items-center justify-center">
-      <div className="bg-blue-700 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
-        <p className="text-white text-xl">Login</p>
-        <div className="mt-4">
-
-          <div className="mt-3">
-            <label htmlFor="email" className="text-white">
-              Email
-            </label>
-            <input
-              type="text"
-              className="w-full mt-2 bg-white text-black p-2 outline-none"
-              placeholder="email"
-              name="email"
-              required
-              value={values.email}
-              onChange={handleChange}
-            />
-          </div>
-          {errors.email && (
-            <div className="text-white text-sm mt-1 min-h-[10px]">
-              {errors.email}
+        {
+            loading && <div className="flex items-center justify-center h-[80vh]"><Loader /></div>
+        }
+        {
+            !loading && <div className="bg-blue-700 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
+            <p className="text-white text-xl">Login</p>
+            <div className="mt-4">
+    
+              <div className="mt-3">
+                <label htmlFor="email" className="text-white">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  className="w-full mt-2 bg-white text-black p-2 outline-none"
+                  placeholder="email"
+                  name="email"
+                  required
+                  value={values.email}
+                  onChange={handleChange}
+                />
+              </div>
+              {errors.email && (
+                <div className="text-white text-sm mt-1 min-h-[10px]">
+                  {errors.email}
+                </div>
+              )}
+    
+              <div className="mt-3 relative">
+                <label htmlFor="password" className="text-white">
+                  Password
+                </label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="w-full mt-2 bg-white text-black p-2 outline-none pr-10"
+                  placeholder="password"
+                  name="password"
+                  required
+                  value={values.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-11 text-gray-600"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? < FaEye/> : <FaEyeSlash />}
+                </button>
+              </div>
+              {errors.password && (
+                <div className="text-white text-sm mt-1 min-h-[10px]">
+                  {errors.password}
+                </div>
+              )}
+    
+    
+              <div className="mt-6">
+                <button
+                  className="w-full bg-white text-black font-semibold py-2 rounded
+                                hover:bg-zinc-100 transition-all duration-300"
+                  onClick={handleSubmit}
+                >
+                  Login
+                </button>
+              </div>
+    
+              <div className="mt-4 flex justify-center">
+                <p className="text-white">
+                  Don't have an account?
+                  <Link to="/sign-up" className="text-white ml-1">
+                    Signup
+                  </Link>
+                </p>
+              </div>
             </div>
-          )}
-
-          <div className="mt-3 relative">
-            <label htmlFor="password" className="text-white">
-              Password
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              className="w-full mt-2 bg-white text-black p-2 outline-none pr-10"
-              placeholder="password"
-              name="password"
-              required
-              value={values.password}
-              onChange={handleChange}
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-11 text-gray-600"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? < FaEye/> : <FaEyeSlash />}
-            </button>
           </div>
-          {errors.password && (
-            <div className="text-white text-sm mt-1 min-h-[10px]">
-              {errors.password}
-            </div>
-          )}
-
-
-          <div className="mt-6">
-            <button
-              className="w-full bg-white text-black font-semibold py-2 rounded
-                            hover:bg-zinc-100 transition-all duration-300"
-              onClick={handleSubmit}
-            >
-              Login
-            </button>
-          </div>
-
-          <div className="mt-4 flex justify-center">
-            <p className="text-white">
-              Don't have an account?
-              <Link to="/sign-up" className="text-white ml-1">
-                Signup
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
+        }
+      
     </div>
   );
 };

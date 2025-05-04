@@ -23,13 +23,13 @@ const Navbar = () => {
     }
   return (
     <nav className='w-full h-[10vh] bg-blue-700 flex py-2 px-6 items-center justify-between'>
-      <Link to='/dashboard' className='font-sans text-3xl text-white font-bold'>Task Tracker</Link>
+      <Link to='/dashboard' className='font-sans text-3xl text-white font-bold no-underline'>Task Tracker</Link>
       <div className='flex gap-4 pr-4'>
         {
             !isAuthenticated && 
             <>
-            <Link to="/login" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Login</Link>
-            <Link to="/sign-up" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100'>Signup</Link>
+            <Link to="/login" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100 no-underline'>Login</Link>
+            <Link to="/sign-up" className=' text-xl bg-white py-2 px-3 rounded-md hover:bg-zinc-100 no-underline'>Signup</Link>
             </>
         }
         {

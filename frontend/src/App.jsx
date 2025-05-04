@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
 import { Toaster } from "sonner";
+import Loader from './Components/Loader'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
       </Route>
     </Routes>
     <Toaster position='bottom-right'/>
+    {/* <Loader /> */}
     </>
   )
 }
