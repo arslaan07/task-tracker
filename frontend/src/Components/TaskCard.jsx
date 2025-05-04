@@ -78,9 +78,9 @@ const TaskCard = ({ title, description, status, taskId, createdAt, completedAt }
                   </div>
                   
                   <div className='flex justify-between text-sm text-gray-600'>
-                    <p>Created at {formatDate(createdAt)}</p>
-                    {status === 'completed' && <p>|</p>}
-                    {status === 'completed' && <p className='text-[#059033]'>Completed at {completedAt != null && formatDate(completedAt)}</p>}
+                    <p>Created: {formatDate(createdAt)}</p>
+                    {status === 'completed' && <p className='px-2'>|</p>}
+                    {status === 'completed' && <p className='text-[#059033]'>Completed: {completedAt != null && formatDate(completedAt)}</p>}
                   </div>
                 </div>
               </div>
