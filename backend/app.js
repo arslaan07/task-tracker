@@ -6,7 +6,7 @@ const taskRoutes = require('./routes/taskRoutes')
 const connectDB = require('./connection/mongoose')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-require('dotenv').config
+require('dotenv').config()
 connectDB()
 
 const allowedOrigin = [

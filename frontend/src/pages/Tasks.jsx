@@ -16,7 +16,7 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   
   let params = { page: currentPage, limit: TasksPerPage };
   const navParams = useParams()

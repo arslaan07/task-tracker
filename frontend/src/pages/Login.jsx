@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   
   const validateField = (name, value) => {
     let newErrors = { ...errors };
@@ -77,7 +77,7 @@ const Login = () => {
     
     try {
         setLoading(true)
-        const response = await api.post(`/api/v1/user/sign-in`, values) 
+        const response = await api.post(`/api/v1/user/sign-in`, values, { withCredentials: true }) 
         console.log(response.data)
         dispatch(setUser(response.data.user))
         MyToast('Login successfull', 'success')
