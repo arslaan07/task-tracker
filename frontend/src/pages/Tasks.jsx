@@ -97,7 +97,7 @@ const Tasks = () => {
           ))
         }
       </div>
-      <TaskModal isOpen={isModalOpen} closeModal={closeModal} />
+      <TaskModal isOpen={isModalOpen} closeModal={closeModal} loading={loading} setLoading={setLoading} />
     </>
   );
 };
