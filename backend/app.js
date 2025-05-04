@@ -10,7 +10,8 @@ require('dotenv').config()
 connectDB()
 
 const allowedOrigin = [
-    'http://localhost:5173'
+    'http://localhost:5173',
+    process.env.FRONTEND_PRODUCTION_URL
 ]
 app.use(cors({
     origin: allowedOrigin, 
