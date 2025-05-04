@@ -1,5 +1,11 @@
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Task_Tracker-blue?style=for-the-badge)](https://task-trackerr7.netlify.app/)
 
+## 🔐 Test User Credentials  
+Use these credentials to log in and explore the app:  
+**Email:** `test@gmail.com`  
+**Password:** `Arslaan@1` 
+
+
 # 🧭 Task Tracker - MERN Stack Application
 
 
