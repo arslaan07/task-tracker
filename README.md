@@ -1,4 +1,7 @@
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Task_Tracker-blue?style=for-the-badge)](https://task-trackerr7.netlify.app/)
+
 # 🧭 Task Tracker - MERN Stack Application
+
 
 A full-featured task management app built using the **MERN** stack (MongoDB, Express.js, React.js, Node.js), with **Redux** for state management and **Tailwind CSS** for styling.
 
