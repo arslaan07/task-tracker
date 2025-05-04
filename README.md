@@ -39,13 +39,19 @@ cd task-tracker
 ###  2. Set Up the Backend
 
 cd backend
+
 npm install
+
 Create a .env file in the backend directory:
 
 PORT=3000
+
 NODE_ENV=development
+
 MONGO_URI=your_mongodb_connection_string
+
 JWT_SECRET_TOKEN=your_jwt_secret_key
+
 FRONTEND_DEVELOPMENT_URL=your_frontend_url
 
 Start the backend server:
@@ -56,7 +62,9 @@ npm run dev
 Open a new terminal window:
 
 cd frontend
+
 npm install
+
 Create a .env file in the frontend directory:
 
 VITE_API_URL=your_backend_url
