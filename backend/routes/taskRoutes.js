@@ -40,10 +40,24 @@ router.post('/:projectId', authenticateUser, async (req, res) => {
 
 router.get('/:projectId/tasks', authenticateUser, async (req, res) => {
     const { projectId } = req.params
-    const page = parseInt(req.query.page) 
-    const limit = parseInt(req.query.limit) 
+    const page = parseInt(req.query.page) || 0; 
+    const limit = parseInt(req.query.limit) || 3; 
+    const search = req.query.search || '';
     try {
-        const tasks = await Task.find({ projectId }).sort({ createdAt: -1 })
+        if (page < 0 || limit <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid pagination parameters'
+            });
+        }
+        const query = { projectId }
+        if(search) { 
+            query.$or = [
+                { title: { $regex: search, $options: 'i' }},
+                { description: { $regex: search, $options: 'i' }}
+            ]
+        }
+        const tasks = await Task.find(query).sort({ createdAt: -1 })
         .skip(page * limit)
         .limit(limit)
         const totalTasks = await Task.countDocuments({ projectId })

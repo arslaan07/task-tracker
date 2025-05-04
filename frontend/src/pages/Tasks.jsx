@@ -17,8 +17,8 @@ const Tasks = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(false)
-  
-  let params = { page: currentPage, limit: TasksPerPage };
+  const [searchQuery, setSearchQuery] = useState('')
+  let params = { page: currentPage, limit: TasksPerPage, search: searchQuery };
   const navParams = useParams()
   const openModal = () => {
     setIsModalOpen(true);
@@ -41,8 +41,29 @@ const Tasks = () => {
                 setLoading(false)
               }
           }
-          fetchTasks()
-      }, [taskCount, taskUpdated, currentPage])
+          if(searchQuery) {
+            setCurrentPage(0)
+          }
+        //   const timer2 = setTimeout(() => {
+        //     if(searchQuery) {
+        //       setLoading(true)
+        //     }  
+        //   }, 600)
+          console.log('wait 2 second...')
+          const timer = setTimeout(() => {
+            console.log('search api fired...')
+            fetchTasks()
+          }, 2000)
+          if(searchQuery === '') {
+            fetchTasks()
+          }
+          return () => {
+            clearTimeout(timer)
+            // clearTimeout(timer2)
+          }
+      }, [taskCount, taskUpdated, currentPage, searchQuery])
+
+
       let pages = []
           for(let page=1; page<=totalPages; page++) {
             pages.push(page)
@@ -54,7 +75,8 @@ const Tasks = () => {
             }
             {
                 !loading && <div className=" mt-6 px-14 py-3">
-                <div className=" pt-4 flex gap-6">
+                <div className=" pt-4 flex gap-6 justify-between items-center">
+                    <div className="flex gap-4">
                   <Link to='/dashboard' className=" relative text-xl text-white bg-blue-600 flex justify-center 
                   items-center rounded-full w-[40px] h-[40px] hover:bg-blue-700">
                     <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
@@ -71,6 +93,17 @@ const Tasks = () => {
                     </span>
                     Create a Task
                   </button>
+                  </div>
+                  <div className='flex justify-center mb-6'>
+                <input
+                    type="text"
+                    placeholder="Search tasks..."
+                    className="px-4 py-2 border border-black rounded-lg w-full w-[30vw] outline-none focus:outline-none focus:ring-2 focus:ring-black"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+                  
                 </div>
                 <div className="flex mt-8 gap-8">
                 {
@@ -92,6 +125,7 @@ const Tasks = () => {
         {
           pages.map((page, i) => (
             <button style={{backgroundColor: page == currentPage+1? 'blue' : ''}} key={i} onClick={() => {
+              setSearchQuery('')
               setCurrentPage(page-1)
             }} className='bg-blue-600 text-white py-2 px-3 rounded-md font-semibold hover:bg-zinc-400'>{page}</button>
           ))
