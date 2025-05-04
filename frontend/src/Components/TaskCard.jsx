@@ -60,7 +60,7 @@ const TaskCard = ({ title, description, status, taskId, createdAt, completedAt }
                     </span>
                   </div>
                 
-                  <p className='text-normal mb-8 max-w-[330px]'>{description}</p>
+                  <p className='text-normal mb-8 break-words overflow-y-auto max-h-[150px]'>{description}</p>
                 </div>
                 
                 <div>
