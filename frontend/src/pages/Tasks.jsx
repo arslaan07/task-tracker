@@ -9,7 +9,7 @@ import MyToast from "../Components/MyToast";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../Components/Loader";
 
-const TasksPerPage = 4
+const TasksPerPage = 3
 const Tasks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { taskCount, taskUpdated } = useSelector(state => state.task)
