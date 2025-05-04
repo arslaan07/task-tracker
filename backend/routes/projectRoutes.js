@@ -4,6 +4,8 @@ const Project = require('../models/projectModel')
 const authenticateUser = require('../middlewares/authenticateUser')
 const { countDocuments } = require('../models/taskModel')
 
+
+// create a project
 router.post('/', authenticateUser, async (req, res) => {
     const { title } = req.body 
 
@@ -38,6 +40,7 @@ router.post('/', authenticateUser, async (req, res) => {
     }
 })
 
+// get all projects
 router.get('/', authenticateUser, async (req, res) => {
     try {
         const projects = await Project.find({ userId: req.user.id }) 

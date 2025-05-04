@@ -4,6 +4,8 @@ const User = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const userSchema = require('../middlewares/userSchema')
+
+// user sign up
 router.post('/sign-up', async (req, res) => {
     const { name, email, password, confirmPassword, country } = req.body
     try {
@@ -63,6 +65,8 @@ router.post('/sign-up', async (req, res) => {
     }
 })
 
+
+// user sign in
 router.post('/sign-in', async (req, res) => {
     const { email, password } = req.body
     try {
@@ -111,6 +115,7 @@ router.post('/sign-in', async (req, res) => {
     }
 })
 
+// user logout
 router.get('/logout', (req, res) => {
     try {
         res.cookie('token', '', {

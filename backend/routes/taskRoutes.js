@@ -4,6 +4,8 @@ const router = express.Router()
 const Task = require('../models/taskModel')
 const Project = require('../models/projectModel')
 
+
+// create a task inside the related project
 router.post('/:projectId', authenticateUser, async (req, res) => {
     const { title, description, status } = req.body 
     const { projectId } = req.params
@@ -38,6 +40,7 @@ router.post('/:projectId', authenticateUser, async (req, res) => {
     }
 })
 
+// get all tasks with search and pagination
 router.get('/:projectId/tasks', authenticateUser, async (req, res) => {
     const { projectId } = req.params
     const page = parseInt(req.query.page) || 0; 
@@ -75,6 +78,7 @@ router.get('/:projectId/tasks', authenticateUser, async (req, res) => {
     }
 })
 
+// get a particular task
 router.get('/:taskId', authenticateUser, async (req, res) => {
     const { taskId } = req.params
     try {
@@ -100,6 +104,7 @@ router.get('/:taskId', authenticateUser, async (req, res) => {
     }
 })
 
+// update a particular task
 router.put('/:taskId', authenticateUser, async (req, res) => {
     const { taskId } = req.params
     const { title, description, status } = req.body
@@ -145,6 +150,7 @@ router.put('/:taskId', authenticateUser, async (req, res) => {
     }
 })
 
+// delete a particular task
 router.delete('/:taskId', authenticateUser, async (req, res) => {
     const { taskId } = req.params
     try {
